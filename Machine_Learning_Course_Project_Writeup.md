@@ -1,11 +1,6 @@
----
-title: 'Human Activity Recognition: Predicting exercise type manner'
-author: "Cușnir Andrei"
-date: "2015 November, 20"
-output: 
-  html_document: 
-    keep_md: yes
----
+# Human Activity Recognition: Predicting exercise type manner
+Cușnir Andrei  
+2015 November, 20  
 
 ## Background
 
@@ -16,14 +11,15 @@ Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible t
 The goal of this project is to predict the manner in which the 6 participants did the exercise. This is the "classe" variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. You will also use your prediction model to predict 20 different test cases.
 
 
-```{r, results="hide", message=FALSE}
+
+```r
 library(caret)
 library(randomForest)
 library(rpart)
 ```
 
-```{r, echo = TRUE, cache=TRUE, message=FALSE}
 
+```r
 # download training data file from url
 if (!file.exists("pml-training.csv")) {
     download.file("http://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv", destfile = "pml-training.csv", method="curl")
@@ -35,29 +31,52 @@ if (!file.exists("pml-testing.csv")) {
 ```
 
 Reading both training and testing data sets  
-```{r, echo = TRUE, cache=TRUE, message=FALSE}
 
+```r
 training<-read.csv("pml-training.csv", na.strings=c("NA","#DIV/0!"))
 testing<-read.csv("pml-testing.csv", na.strings=c("NA","#DIV/0!"))
 ```
 
 ## Data exploring  
 
-```{r, echo = TRUE, cache=TRUE, message=FALSE}
+
+```r
 dim(training)
+```
+
+```
+## [1] 19622   160
+```
+
+```r
 table(training$classe)
+```
+
+```
+## 
+##    A    B    C    D    E 
+## 5580 3797 3422 3216 3607
 ```
 
 Making sure we are not using records with NA which can create noise in our model.
 Some variables are used as identifiers so we are removing these too
 Those variables are "X", "user_name", and all the time related variables, such as "raw_timestamp_part_1", etc...   
 
-```{r, echo = TRUE, cache=TRUE, message=FALSE}
+
+```r
 NA_Count <- sapply(1:dim(training)[2], function(x)sum(is.na(training[,x])))
 NA_list <- which(NA_Count>0)
 # making sure about column names of identifiers we will remove from training set
 colnames(training[,c(1:7)])
+```
 
+```
+## [1] "X"                    "user_name"            "raw_timestamp_part_1"
+## [4] "raw_timestamp_part_2" "cvtd_timestamp"       "new_window"          
+## [7] "num_window"
+```
+
+```r
 training <- training[,-NA_list]
 training <- training[,-c(1:7)]
 training$classe = factor(training$classe)
@@ -73,7 +92,8 @@ Also a 3-fold validation was done using trainControl function.
 For speeding up training will use here multicore abilities of train function, 
 for this we have to load doMC library and set cores number as per present number of cores in current computer
 
-```{r, echo = TRUE, cache=TRUE, message=FALSE}
+
+```r
 set.seed(2434)
 
 library(doMC)
@@ -82,33 +102,90 @@ registerDoMC(cores = 4)
 
 crval <- trainControl(method="cv", number=3, allowParallel=TRUE, verboseIter=TRUE)
 model.rf <- train(classe~., data=training, method="rf", trControl=crval, allowParallel = TRUE)
+```
+
+```
+## Aggregating results
+## Selecting tuning parameters
+## Fitting mtry = 27 on full training set
+```
+
+```r
 model.tree <- train(classe~., data=training, method="rpart", trControl=crval)
 ```
 
+```
+## Aggregating results
+## Selecting tuning parameters
+## Fitting cp = 0.0357 on full training set
+```
+
 The performance of these two models on the training dataset was:  
-```{r, echo = TRUE, cache=TRUE, message=FALSE}
+
+```r
 predict.rf <- predict(model.rf, training)
 predict.tree <- predict(model.tree, training)
 
 table(predict.rf, training$classe)
+```
+
+```
+##           
+## predict.rf    A    B    C    D    E
+##          A 5580    0    0    0    0
+##          B    0 3797    0    0    0
+##          C    0    0 3422    0    0
+##          D    0    0    0 3216    0
+##          E    0    0    0    0 3607
+```
+
+```r
 table(predict.tree, training$classe)
 ```
+
+```
+##             
+## predict.tree    A    B    C    D    E
+##            A 5080 1581 1587 1449  524
+##            B   81 1286  108  568  486
+##            C  405  930 1727 1199  966
+##            D    0    0    0    0    0
+##            E   14    0    0    0 1631
+```
 And the performance of these two models on the testing dataset was:  
-```{r, echo = TRUE, cache=TRUE, message=FALSE}
+
+```r
 predict.rf <- predict(model.rf, testing)
 predict.tree <- predict(model.tree, testing)
 table(predict.rf, predict.tree)
+```
 
+```
+##           predict.tree
+## predict.rf A B C D E
+##          A 7 0 0 0 0
+##          B 3 0 5 0 0
+##          C 0 0 1 0 0
+##          D 0 0 1 0 0
+##          E 1 0 2 0 0
 ```
 From the results, we can see that the random forest model has the best accuracy for testing dataset.  
 
 ## Predictions
 Random forest model was used on testing dataset with 20 raws to predict new data.
 pml_write_files function was used to create response files.
-```{r, echo = TRUE, cache=TRUE, message=FALSE}
+
+```r
 answers <- predict(model.rf, testing)
 answers
+```
 
+```
+##  [1] B A B A A E D B A A B C B A E E A B B B
+## Levels: A B C D E
+```
+
+```r
 pml_write_files <- function(x){
     if (!file.exists("data")) {dir.create("data")}
     n <- length(x)
@@ -118,7 +195,6 @@ pml_write_files <- function(x){
     }
 }
 pml_write_files(answers)
-
 ```
 ## Conclusions
 

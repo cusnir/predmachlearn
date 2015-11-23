@@ -123,7 +123,7 @@ crval &lt;- trainControl(method=&quot;cv&quot;, number=3, allowParallel=TRUE, ve
 model.rf &lt;- train(classe~., data=training, method=&quot;rf&quot;, trControl=crval, allowParallel = TRUE)</code></pre>
 <pre><code>## Aggregating results
 ## Selecting tuning parameters
-## Fitting mtry = 2 on full training set</code></pre>
+## Fitting mtry = 27 on full training set</code></pre>
 <pre class="r"><code>model.tree &lt;- train(classe~., data=training, method=&quot;rpart&quot;, trControl=crval)</code></pre>
 <pre><code>## Aggregating results
 ## Selecting tuning parameters
@@ -169,9 +169,10 @@ answers</code></pre>
 <pre><code>##  [1] B A B A A E D B A A B C B A E E A B B B
 ## Levels: A B C D E</code></pre>
 <pre class="r"><code>pml_write_files &lt;- function(x){
+    if (!file.exists(&quot;data&quot;)) {dir.create(&quot;data&quot;)}
     n &lt;- length(x)
     for(i in 1:n){
-        filename &lt;- paste0(&quot;problem_id_&quot;,i,&quot;.txt&quot;)
+        filename &lt;- paste0(&quot;data/&quot;, &quot;problem_id_&quot;,i,&quot;.txt&quot;)
         write.table(x[i], file &lt;- filename, quote=FALSE, row.names=FALSE, col.names=FALSE)
     }
 }
