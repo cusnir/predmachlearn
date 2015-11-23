@@ -197,11 +197,11 @@ table(predict.rf, predict.tree)</code></pre>
 ##          C 0 0 1 0 0
 ##          D 0 0 1 0 0
 ##          E 1 0 2 0 0</code></pre>
-<p>From the results, we can see that the random forest model has the best accuracy for testing dataset.</p>
+<p>From the results, we can see that the random forest model has the best accuracy(0.9924576) versus tree model acuracy(0.4979624).</p>
 </div>
 <div id="predictions" class="section level2">
 <h2>Predictions</h2>
-<p>Random forest model was used on testing dataset with 20 raws to predict new data. pml_write_files function was used to create response files.</p>
+<p>Random forest model was used on testing dataset with 20 rows to predict new data.<br /><code>pml_write_files</code> function was used to create response files.</p>
 <pre class="r"><code>answers &lt;- predict(model.rf, testing)
 answers</code></pre>
 <pre><code>##  [1] B A B A A E D B A A B C B A E E A B B B

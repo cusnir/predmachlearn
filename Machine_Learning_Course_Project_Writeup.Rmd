@@ -103,11 +103,11 @@ predict.tree <- predict(model.tree, testing)
 table(predict.rf, predict.tree)
 
 ```
-From the results, we can see that the random forest model has the best accuracy for testing dataset.  
+From the results, we can see that the random forest model has the best accuracy(0.9924576) versus tree model acuracy(0.4979624).  
 
 ## Predictions
-Random forest model was used on testing dataset with 20 raws to predict new data.
-pml_write_files function was used to create response files.
+Random forest model was used on testing dataset with 20 rows to predict new data.  
+`pml_write_files` function was used to create response files.
 ```{r, echo = TRUE, cache=TRUE, message=FALSE}
 answers <- predict(model.rf, testing)
 answers
