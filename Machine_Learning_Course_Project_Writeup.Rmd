@@ -83,7 +83,9 @@ registerDoMC(cores = 4)
 
 crval <- trainControl(method="cv", number=3, allowParallel=TRUE, verboseIter=TRUE)
 model.rf <- train(classe~., data=training, method="rf", trControl=crval, allowParallel = TRUE)
+model.rf
 model.tree <- train(classe~., data=training, method="rpart", trControl=crval)
+model.tree
 ```
 
 The performance of these two models on the training dataset was:  

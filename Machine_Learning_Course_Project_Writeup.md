@@ -108,7 +108,32 @@ model.rf <- train(classe~., data=training, method="rf", trControl=crval, allowPa
 ```
 ## Aggregating results
 ## Selecting tuning parameters
-## Fitting mtry = 27 on full training set
+## Fitting mtry = 2 on full training set
+```
+
+```r
+model.rf
+```
+
+```
+## Random Forest 
+## 
+## 19622 samples
+##    52 predictor
+##     5 classes: 'A', 'B', 'C', 'D', 'E' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (3 fold) 
+## Summary of sample sizes: 13082, 13080, 13082 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy   Kappa      Accuracy SD   Kappa SD    
+##    2    0.9924576  0.9904587  0.0016046873  0.0020297546
+##   27    0.9919988  0.9898789  0.0003834413  0.0004845367
+##   52    0.9865460  0.9829813  0.0025238838  0.0031933394
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was mtry = 2.
 ```
 
 ```r
@@ -119,6 +144,31 @@ model.tree <- train(classe~., data=training, method="rpart", trControl=crval)
 ## Aggregating results
 ## Selecting tuning parameters
 ## Fitting cp = 0.0357 on full training set
+```
+
+```r
+model.tree
+```
+
+```
+## CART 
+## 
+## 19622 samples
+##    52 predictor
+##     5 classes: 'A', 'B', 'C', 'D', 'E' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (3 fold) 
+## Summary of sample sizes: 13082, 13080, 13082 
+## Resampling results across tuning parameters:
+## 
+##   cp          Accuracy   Kappa       Accuracy SD  Kappa SD  
+##   0.03567868  0.4979624  0.34332268  0.009554896  0.01200664
+##   0.05998671  0.4069329  0.19316624  0.070537823  0.11887130
+##   0.11515454  0.3389109  0.08302399  0.047280170  0.07190125
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was cp = 0.03567868.
 ```
 
 The performance of these two models on the training dataset was:  
